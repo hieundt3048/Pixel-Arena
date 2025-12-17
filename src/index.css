@@ -122,7 +122,7 @@
   }
 
   #pixel-canvas {
-    @apply w-160 h-160;
+    @apply w-140 h-140 border p-3;
 
     image-rendering: pixelated;
   }

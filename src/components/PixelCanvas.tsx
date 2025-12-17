@@ -1,4 +1,3 @@
-import { drawPixel } from "@/lib/canvas";
 import type { PixelCanvasProps } from "@/lib/constants";
 import { http } from "@/lib/http";
 import { hexToRgb } from "@/lib/utils";
@@ -86,11 +85,8 @@ const PixelCanvas = ({ pixels, width, height, scale }: PixelCanvasProps) => {
       console.error(e);
     }
   };
-  return (
-    <div className="border rounded p-3">
-      <canvas ref={canvasRef} id="pixel-canvas" onClick={handleClick} />
-    </div>
-  );
+
+  return <canvas ref={canvasRef} id="pixel-canvas" onClick={handleClick} />;
 };
 
 export default PixelCanvas;

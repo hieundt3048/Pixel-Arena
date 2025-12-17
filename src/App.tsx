@@ -1,46 +1,28 @@
-import PixelCanvas from "@/components/PixelCanvas";
-import { useEffect, useState } from "react";
-import type { Pixel } from "@/lib/constants";
-import { http } from "@/lib/http";
-import Loading from "@/components/Loading";
-
-const CANVAS_WIDTH = 100;
-const CANVAS_HEIGHT = 100;
-const CANVAS_SCALE = 8;
+import RootLayout from "@/layouts/RootLayout";
+import { Canvas } from "@/lib/canvas";
+import { useEffect, useRef } from "react";
 
 function App() {
-  const [pixels, setPixels] = useState([] as Pixel[]);
-  const [loading, setLoading] = useState(false);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const canvasInstanceRef = useRef<Canvas | null>(null);
 
   useEffect(() => {
-    const getData = async () => {
-      setLoading(true);
+    const canvas = canvasRef.current;
+    if (!canvas) return;
 
-      try {
-        const res = await http.get("/pixels");
-
-        setPixels(res.data);
-      } catch (e) {
-        console.error(e);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    getData();
+    const canvasInstance = new Canvas(canvas, 100, 10);
+    canvasInstance.initialize();
+    canvasInstanceRef.current = canvasInstance;
   }, []);
 
-  if (loading) return <Loading />;
+  const handleClick = (e: React.MouseEvent<HTMLCanvasElement>) => {
+    if (canvasInstanceRef.current) canvasInstanceRef.current.paint(e);
+  };
 
   return (
-    <div className="flex min-h-svh flex-col items-center justify-center">
-      <PixelCanvas
-        pixels={pixels}
-        width={CANVAS_WIDTH}
-        height={CANVAS_HEIGHT}
-        scale={CANVAS_SCALE}
-      />
-    </div>
+    <RootLayout>
+      <canvas className="border" ref={canvasRef} onClick={handleClick} />
+    </RootLayout>
   );
 }
 
