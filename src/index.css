@@ -117,8 +117,17 @@
   * {
     @apply border-border outline-ring/50;
   }
+
+  html,
   body {
     @apply bg-background text-foreground;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  #root {
+    height: 100%;
+    overflow: hidden;
   }
 
   #pixel-canvas {
@@ -129,6 +138,24 @@
 
   #sub-canvas,
   #canvas {
+    display: block;
     image-rendering: pixelated;
+  }
+
+  /* Ensure TransformWrapper fits within container */
+  .react-transform-wrapper {
+    width: 100% !important;
+    height: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  .react-transform-component {
+    width: 100% !important;
+    height: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
   }
 }

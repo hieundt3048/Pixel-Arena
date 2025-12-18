@@ -1,5 +1,20 @@
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  type Dispatch,
+  type SetStateAction,
+} from "react";
 import type { PixelPosition } from "@/lib/constants";
-import { useEffect, useRef, type Dispatch, type SetStateAction } from "react";
+import {
+  OVERLAY_COLORS,
+  OVERLAY_DIMENSIONS,
+  CANVAS_CONFIG,
+} from "@/lib/constants";
+
+// ============================================================================
+// Types
+// ============================================================================
 
 interface SubCanvasProps {
   gridSize: number;
@@ -8,55 +23,98 @@ interface SubCanvasProps {
   setPosition: Dispatch<SetStateAction<PixelPosition | null>>;
 }
 
+// ============================================================================
+// Utility Functions
+// ============================================================================
+
+/**
+ * Converts mouse event coordinates to grid coordinates
+ */
 const getCoords = (
   e: React.MouseEvent,
   canvas: HTMLCanvasElement,
-  pixelSize: number
-) => {
+  pixelSize: number,
+  gridSize: number
+): PixelPosition | null => {
   const rect = canvas.getBoundingClientRect();
 
+  // Calculate scale factors for transformed canvas
   const scaleX = canvas.width / rect.width;
   const scaleY = canvas.height / rect.height;
 
+  // Convert screen coordinates to canvas coordinates
   const x = Math.floor(((e.clientX - rect.left) * scaleX) / pixelSize);
   const y = Math.floor(((e.clientY - rect.top) * scaleY) / pixelSize);
+
+  // Validate bounds
+  if (x < 0 || x >= gridSize || y < 0 || y >= gridSize) {
+    return null;
+  }
 
   return { x, y };
 };
 
+/**
+ * Draws the pixel selection overlay at the specified coordinates
+ */
 const drawOverlay = (
   ctx: CanvasRenderingContext2D,
   pixelSize: number,
   coords: PixelPosition
-) => {
-  ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+): void => {
+  const { width, height } = ctx.canvas;
+  ctx.clearRect(0, 0, width, height);
 
-  const px = (x: number, y: number, w = 1, h = 1) => {
-    ctx.fillRect(coords.x * pixelSize + x, coords.y * pixelSize + y, w, h);
+  const baseX = coords.x * pixelSize;
+  const baseY = coords.y * pixelSize;
+  const {
+    cornerSize,
+    cornerOffset,
+    innerSize,
+    innerOffset,
+    dotSize,
+    dotOffset,
+  } = OVERLAY_DIMENSIONS;
+
+  // Helper function to draw rectangles relative to pixel position
+  const drawRect = (x: number, y: number, w: number, h: number): void => {
+    ctx.fillRect(baseX + x, baseY + y, w, h);
   };
 
-  ctx.fillStyle = "#edf2f4";
-  px(0, 0, pixelSize, pixelSize);
+  // Draw background highlight
+  ctx.fillStyle = OVERLAY_COLORS.background;
+  drawRect(0, 0, pixelSize, pixelSize);
 
-  ctx.fillStyle = "#8d99ae";
-  px(0, 0, 4, 4);
-  px(6, 0, 4, 4);
-  px(0, 6, 4, 4);
-  px(6, 6, 4, 4);
+  // Draw corner borders
+  ctx.fillStyle = OVERLAY_COLORS.border;
+  drawRect(0, 0, cornerSize, cornerSize);
+  drawRect(cornerOffset, 0, cornerSize, cornerSize);
+  drawRect(0, cornerOffset, cornerSize, cornerSize);
+  drawRect(cornerOffset, cornerOffset, cornerSize, cornerSize);
 
-  ctx.fillStyle = "#2b2d42";
-  px(1, 1, 3, 3);
-  px(6, 1, 3, 3);
-  px(1, 6, 3, 3);
-  px(6, 6, 3, 3);
+  // Draw inner corners
+  ctx.fillStyle = OVERLAY_COLORS.corner;
+  drawRect(innerOffset, innerOffset, innerSize, innerSize);
+  drawRect(cornerOffset, innerOffset, innerSize, innerSize);
+  drawRect(innerOffset, cornerOffset, innerSize, innerSize);
+  drawRect(cornerOffset, cornerOffset, innerSize, innerSize);
 
-  ctx.fillStyle = "#edf2f4";
-  px(2, 2, 2, 2);
-  px(6, 2, 2, 2);
-  px(2, 6, 2, 2);
-  px(6, 6, 2, 2);
+  // Draw corner dots
+  ctx.fillStyle = OVERLAY_COLORS.background;
+  drawRect(dotOffset, dotOffset, dotSize, dotSize);
+  drawRect(cornerOffset, dotOffset, dotSize, dotSize);
+  drawRect(dotOffset, cornerOffset, dotSize, dotSize);
+  drawRect(cornerOffset, cornerOffset, dotSize, dotSize);
 };
 
+// ============================================================================
+// Component
+// ============================================================================
+
+/**
+ * Overlay canvas component that handles mouse interactions and displays
+ * pixel selection overlay
+ */
 const SubCanvas = ({
   gridSize,
   pixelSize,
@@ -65,19 +123,28 @@ const SubCanvas = ({
 }: SubCanvasProps) => {
   const subCanvasRef = useRef<HTMLCanvasElement>(null);
 
+  // Initialize canvas dimensions and context
   useEffect(() => {
     const canvas = subCanvasRef.current;
     if (!canvas) return;
 
-    canvas.width = gridSize * pixelSize;
-    canvas.height = gridSize * pixelSize;
+    const width = gridSize * pixelSize;
+    const height = gridSize * pixelSize;
 
-    const ctx = canvas.getContext("2d");
+    canvas.width = width;
+    canvas.height = height;
+
+    const ctx = canvas.getContext("2d", {
+      alpha: true, // Transparent overlay
+    });
+
     if (!ctx) return;
 
-    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    ctx.imageSmoothingEnabled = CANVAS_CONFIG.imageSmoothingEnabled;
+    ctx.clearRect(0, 0, width, height);
   }, [gridSize, pixelSize]);
 
+  // Draw overlay when position changes
   useEffect(() => {
     const canvas = subCanvasRef.current;
     if (!canvas) return;
@@ -85,43 +152,54 @@ const SubCanvas = ({
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    ctx.imageSmoothingEnabled = CANVAS_CONFIG.imageSmoothingEnabled;
 
-    if (!position) return;
-    drawOverlay(ctx, pixelSize, position);
+    const { width, height } = canvas;
+    ctx.clearRect(0, 0, width, height);
+
+    if (position) {
+      drawOverlay(ctx, pixelSize, position);
+    }
   }, [position, pixelSize]);
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
-    const canvas = subCanvasRef.current;
-    if (!canvas) return;
+  // Event handlers (memoized to prevent unnecessary re-renders)
+  const handleMouseMove = useCallback(
+    (e: React.MouseEvent<HTMLCanvasElement>) => {
+      const canvas = subCanvasRef.current;
+      if (!canvas) return;
 
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
+      const coords = getCoords(e, canvas, pixelSize, gridSize);
+      setPosition(coords);
+    },
+    [pixelSize, gridSize, setPosition]
+  );
 
-    const coords = getCoords(e, canvas, pixelSize);
+  const handleMouseClick = useCallback(
+    (e: React.MouseEvent<HTMLCanvasElement>) => {
+      const canvas = subCanvasRef.current;
+      if (!canvas) return;
 
-    setPosition(coords);
-  };
+      const coords = getCoords(e, canvas, pixelSize, gridSize);
+      if (coords) {
+        setPosition(coords);
+      }
+    },
+    [pixelSize, gridSize, setPosition]
+  );
 
-  const handleMouseClick = (e: React.MouseEvent<HTMLCanvasElement>) => {
-    const canvas = subCanvasRef.current;
-    if (!canvas) return;
-
-    const coords = getCoords(e, canvas, pixelSize);
-
-    setPosition(coords);
-  };
-
-  const handleMouseLeave = () => setPosition(null);
+  const handleMouseLeave = useCallback(() => {
+    setPosition(null);
+  }, [setPosition]);
 
   return (
     <canvas
-      className="absolute top-0 right-0"
+      className="absolute top-0 left-0 pointer-events-auto"
       ref={subCanvasRef}
       id="sub-canvas"
       onClick={handleMouseClick}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
+      aria-label="Canvas overlay for pixel selection"
     />
   );
 };

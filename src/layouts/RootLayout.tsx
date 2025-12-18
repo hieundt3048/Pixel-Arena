@@ -1,18 +1,30 @@
+import type React from "react";
 import Navbar from "@/components/Navbar";
 import Sidebar from "@/components/Sidebar";
-import type React from "react";
+
+// ============================================================================
+// Types
+// ============================================================================
 
 interface RootLayoutProps {
   children: React.ReactNode;
 }
 
+// ============================================================================
+// Component
+// ============================================================================
+
+/**
+ * Root layout component that provides the main application structure
+ * with navbar, main content area, and sidebar
+ */
 const RootLayout = ({ children }: RootLayoutProps) => {
   return (
-    <div className="min-h-svh w-full flex flex-col">
+    <div className="h-svh w-full flex flex-col overflow-hidden">
       <Navbar />
 
-      <div className="flex-1 flex p-3 gap-3">
-        <main className="w-full p-3 border rounded flex items-center justify-center">
+      <div className="flex-1 flex p-3 gap-3 overflow-hidden min-h-0">
+        <main className="w-full border rounded flex items-center justify-center overflow-hidden min-h-0">
           {children}
         </main>
 
