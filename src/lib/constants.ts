@@ -12,3 +12,8 @@ export interface PixelCanvasProps {
   height: number;
   scale: number;
 }
+
+export interface PixelPosition {
+  x: number;
+  y: number;
+}

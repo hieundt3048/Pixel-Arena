@@ -126,4 +126,9 @@
 
     image-rendering: pixelated;
   }
+
+  #sub-canvas,
+  #canvas {
+    image-rendering: pixelated;
+  }
 }
