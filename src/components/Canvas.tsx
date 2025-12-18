@@ -1,72 +1,56 @@
+import { GRID_SIZE, PIXEL_SIZE } from "@/lib/constants";
 import { useEffect, useRef } from "react";
-import { CANVAS_COLORS, CANVAS_CONFIG } from "@/lib/constants";
 
-// ============================================================================
-// Types
-// ============================================================================
+const drawBase = (
+  ctx: CanvasRenderingContext2D,
+  width: number,
+  height: number
+) => {
+  // Clear background
+  ctx.clearRect(0, 0, width, height);
+  ctx.fillStyle = "#FFFFFF";
+  ctx.fillRect(0, 0, width, height);
 
-interface CanvasProps {
-  gridSize: number;
-  pixelSize: number;
-}
+  // Draw grid lines
+  ctx.strokeStyle = "#F0F0F0";
+  ctx.lineWidth = 1;
 
-// ============================================================================
-// Component
-// ============================================================================
+  [...Array(GRID_SIZE).keys()].forEach((i) => {
+    const pos = i * PIXEL_SIZE;
 
-/**
- * Main canvas component that renders the pixel grid background
- */
-const Canvas = ({ gridSize, pixelSize }: CanvasProps) => {
+    // Vertical line
+    ctx.beginPath();
+    ctx.moveTo(pos, 0);
+    ctx.lineTo(pos, height);
+    ctx.stroke();
+
+    // Horizontal line
+    ctx.beginPath();
+    ctx.moveTo(0, pos);
+    ctx.lineTo(width, pos);
+    ctx.stroke();
+  });
+};
+
+const Canvas = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    const width = gridSize * pixelSize;
-    const height = gridSize * pixelSize;
+    const width = GRID_SIZE * PIXEL_SIZE;
+    const height = GRID_SIZE * PIXEL_SIZE;
 
-    // Set canvas dimensions
     canvas.width = width;
     canvas.height = height;
 
-    // Get 2D context with performance optimizations
-    const ctx = canvas.getContext("2d", {
-      alpha: CANVAS_CONFIG.contextAlpha,
-      desynchronized: CANVAS_CONFIG.contextDesynchronized,
-    });
-
+    const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    // Configure for crisp pixel rendering
-    ctx.imageSmoothingEnabled = CANVAS_CONFIG.imageSmoothingEnabled;
-
-    // Clear and fill background
-    ctx.clearRect(0, 0, width, height);
-    ctx.fillStyle = CANVAS_COLORS.background;
-    ctx.fillRect(0, 0, width, height);
-
-    // Draw grid lines
-    ctx.strokeStyle = CANVAS_COLORS.gridLine;
-    ctx.lineWidth = CANVAS_CONFIG.gridLineWidth;
-
-    for (let i = 0; i <= gridSize; i++) {
-      const pos = i * pixelSize;
-
-      // Vertical line
-      ctx.beginPath();
-      ctx.moveTo(pos, 0);
-      ctx.lineTo(pos, height);
-      ctx.stroke();
-
-      // Horizontal line
-      ctx.beginPath();
-      ctx.moveTo(0, pos);
-      ctx.lineTo(width, pos);
-      ctx.stroke();
-    }
-  }, [gridSize, pixelSize]);
+    ctx.imageSmoothingEnabled = false;
+    drawBase(ctx, width, height);
+  }, []);
 
   return <canvas ref={canvasRef} id="canvas" aria-label="Pixel canvas" />;
 };

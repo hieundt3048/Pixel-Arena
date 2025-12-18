@@ -1,7 +1,3 @@
-// ============================================================================
-// Type Definitions
-// ============================================================================
-
 export interface Pixel {
   x: number;
   y: number;
@@ -22,16 +18,8 @@ export interface PixelPosition {
   y: number;
 }
 
-// ============================================================================
-// Canvas Configuration
-// ============================================================================
-
 export const GRID_SIZE = 100;
 export const PIXEL_SIZE = 10;
-
-// ============================================================================
-// Overlay Configuration
-// ============================================================================
 
 export const OVERLAY_COLORS = {
   background: "#edf2f4",
@@ -48,10 +36,6 @@ export const OVERLAY_DIMENSIONS = {
   dotOffset: 2,
 } as const;
 
-// ============================================================================
-// Transform Configuration
-// ============================================================================
-
 export const TRANSFORM_CONFIG = {
   initialScale: 1,
   minScale: 0.1,
@@ -60,10 +44,6 @@ export const TRANSFORM_CONFIG = {
   panningEnabled: true,
   limitToBounds: false,
 } as const;
-
-// ============================================================================
-// Canvas Drawing Constants
-// ============================================================================
 
 export const CANVAS_COLORS = {
   background: "#ffffff",

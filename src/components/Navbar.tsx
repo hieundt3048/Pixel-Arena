@@ -6,7 +6,7 @@ const Navbar = () => {
   const { username, status } = useUsername();
 
   return (
-    <div className="w-full flex justify-between items-center h-16 px-6 border-b">
+    <div className="w-full flex justify-between items-center h-16 px-6 border-b select-none">
       <h1 className="text-lg font-mono font-medium">Pixel Battle</h1>
 
       <div className="flex items-center gap-3">
