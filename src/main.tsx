@@ -5,6 +5,7 @@ import App from "./App.tsx";
 import { Toaster } from "@/components/ui/sonner.tsx";
 import CanvasProvider from "@/provider/CanvasProvider";
 import UserProvider from "@/provider/UserProvider";
+import UserDialog from "@/components/UserDialog";
 
 createRoot(document.getElementById("root")!).render(
   <>
@@ -12,6 +13,7 @@ createRoot(document.getElementById("root")!).render(
       <UserProvider>
         <CanvasProvider>
           <Toaster />
+          <UserDialog />
           <App />
         </CanvasProvider>
       </UserProvider>

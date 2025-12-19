@@ -12,7 +12,7 @@ const App = () => {
   if (loading) return <Loading />;
 
   return (
-    <div className="w-full h-screen flex flex-col select-none overflow-hidden">
+    <div className="w-full h-screen flex flex-col gap-3 select-none overflow-hidden">
       <Navbar />
       <div className="flex gap-3 w-full flex-1 min-h-0 px-3 pb-3">
         <main className="w-full h-full border p-3 overflow-hidden bg-gray-50 min-h-0">

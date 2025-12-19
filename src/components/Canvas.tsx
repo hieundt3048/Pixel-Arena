@@ -64,7 +64,6 @@ const Canvas = () => {
       ref={canvasRef}
       id="canvas"
       className="w-full h-full"
-      style={{ imageRendering: "pixelated" }}
       aria-label="Pixel canvas"
     />
   );

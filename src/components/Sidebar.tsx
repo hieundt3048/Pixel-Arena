@@ -30,7 +30,7 @@ const Sidebar = () => {
 
   const addLog = (message: string) => {
     const timestamp = new Date().toLocaleTimeString();
-    setLogs((prev) => [`[${timestamp}] ${message}`, ...prev].slice(0, 50)); // Keep last 50 logs
+    setLogs((prev) => [`[${timestamp}] ${message}`, ...prev].slice(0, 50));
   };
 
   const handleDemoTool = () => {

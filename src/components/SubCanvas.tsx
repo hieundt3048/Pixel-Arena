@@ -41,7 +41,6 @@ const SubCanvas = () => {
       className="absolute top-0 left-0 w-full h-full pointer-events-auto"
       ref={subCanvasRef}
       id="sub-canvas"
-      style={{ imageRendering: "pixelated" }}
       onMouseMove={(e) => handleHover({ e, canvasRef: subCanvasRef })}
       onMouseLeave={handleLeave}
       aria-label="Canvas overlay for pixel selection"
