@@ -38,7 +38,7 @@ const Sidebar = () => {
   };
 
   return (
-    <div className="p-4 border rounded w-96 h-full flex flex-col gap-6 overflow-y-auto">
+    <div className="p-4 border rounded w-96 h-full flex flex-col gap-6 overflow-y-auto min-h-0">
       {/* Color Picker Section */}
       <div className="space-y-3">
         <h2 className="text-lg font-semibold">Color Picker</h2>

@@ -1,0 +1,45 @@
+import type { MouseEvent, RefObject } from "react";
+
+export interface PixelRecord {
+  x: number;
+  y: number;
+  color: string;
+  updatedBy: string;
+  updatedAt: Date;
+  version: number;
+}
+
+export interface PixelCoord {
+  x: number;
+  y: number;
+}
+
+export interface PixelHistory {
+  id: number;
+  x: number;
+  y: number;
+  oldColor: string;
+  newColor: string;
+  changedBy: string;
+  changedAt: Date;
+}
+
+export interface PixelRequest {
+  x: number;
+  y: number;
+  color: string;
+  updatedBy: string;
+  mode: "NONE" | "PESSIMISTIC" | "OPTIMISTIC";
+}
+
+export interface PixelUpdateMessage {
+  x: number;
+  y: number;
+  color: string;
+  updatedBy: string;
+}
+
+export interface CanvasFuncProps {
+  e: MouseEvent<HTMLCanvasElement>;
+  canvasRef: RefObject<HTMLCanvasElement | null>;
+}

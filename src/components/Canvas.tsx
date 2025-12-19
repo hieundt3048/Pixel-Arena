@@ -1,39 +1,20 @@
+import { useCanvas } from "@/contexts/CanvasContext";
 import { GRID_SIZE, PIXEL_SIZE } from "@/lib/constants";
 import { useEffect, useRef } from "react";
 
-const drawBase = (
+const fillRect = (
   ctx: CanvasRenderingContext2D,
-  width: number,
-  height: number
+  color: string,
+  x: number,
+  y: number
 ) => {
-  // Clear background
-  ctx.clearRect(0, 0, width, height);
-  ctx.fillStyle = "#FFFFFF";
-  ctx.fillRect(0, 0, width, height);
-
-  // Draw grid lines
-  ctx.strokeStyle = "#F0F0F0";
-  ctx.lineWidth = 1;
-
-  [...Array(GRID_SIZE).keys()].forEach((i) => {
-    const pos = i * PIXEL_SIZE;
-
-    // Vertical line
-    ctx.beginPath();
-    ctx.moveTo(pos, 0);
-    ctx.lineTo(pos, height);
-    ctx.stroke();
-
-    // Horizontal line
-    ctx.beginPath();
-    ctx.moveTo(0, pos);
-    ctx.lineTo(width, pos);
-    ctx.stroke();
-  });
+  ctx.fillStyle = color;
+  ctx.fillRect(x * PIXEL_SIZE, y * PIXEL_SIZE, PIXEL_SIZE, PIXEL_SIZE);
 };
 
 const Canvas = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const { data } = useCanvas();
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -48,11 +29,45 @@ const Canvas = () => {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    ctx.imageSmoothingEnabled = false;
-    drawBase(ctx, width, height);
-  }, []);
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  return <canvas ref={canvasRef} id="canvas" aria-label="Pixel canvas" />;
+    // Draw grid lines on top
+    ctx.strokeStyle = "#F0F0F0";
+    ctx.lineWidth = 1;
+
+    [...Array(GRID_SIZE).keys()].forEach((i) => {
+      const pos = i * PIXEL_SIZE;
+
+      // Vertical line
+      ctx.beginPath();
+      ctx.moveTo(pos, 0);
+      ctx.lineTo(pos, height);
+      ctx.stroke();
+
+      // Horizontal line
+      ctx.beginPath();
+      ctx.moveTo(0, pos);
+      ctx.lineTo(width, pos);
+      ctx.stroke();
+    });
+
+    if (!data) return;
+
+    for (const pixel of data)
+      if (pixel.color !== "#FFFFFF")
+        fillRect(ctx, pixel.color, pixel.x, pixel.y);
+  }, [data]);
+
+  return (
+    <canvas
+      ref={canvasRef}
+      id="canvas"
+      className="w-full h-full"
+      style={{ imageRendering: "pixelated" }}
+      aria-label="Pixel canvas"
+    />
+  );
 };
 
 export default Canvas;
