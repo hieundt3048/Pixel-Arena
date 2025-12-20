@@ -1,6 +1,15 @@
 import { createContext, useContext } from "react";
 
-export const UserContext = createContext({});
+interface UserContextData {
+  username: string;
+  setUsername: React.Dispatch<React.SetStateAction<string>>;
+  currentUser: string;
+  onSubmit: () => void;
+}
+
+export const UserContext = createContext<UserContextData>(
+  {} as UserContextData
+);
 
 export const useUser = () => {
   const context = useContext(UserContext);

@@ -7,16 +7,15 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { useUser } from "@/contexts/UserContext";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
+import { useUser } from "@/contexts/UserContext";
 
 const UserDialog = () => {
-  const user = useUser();
-  const hasNoSession = user === null;
+  const { username, setUsername, onSubmit, currentUser } = useUser();
 
   return (
-    <Dialog open={hasNoSession} onOpenChange={(open) => !open && hasNoSession}>
+    <Dialog open={!currentUser}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>How can I call you?</DialogTitle>
@@ -26,10 +25,12 @@ const UserDialog = () => {
           id="username"
           name="username"
           placeholder="jack, peter, alice,..."
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
         />
         <DialogFooter>
           <DialogClose asChild>
-            <Button type="button" className="w-full">
+            <Button type="button" className="w-full" onClick={onSubmit}>
               Submit
             </Button>
           </DialogClose>

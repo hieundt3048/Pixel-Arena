@@ -17,8 +17,8 @@ const App = () => {
       <div className="flex gap-3 w-full flex-1 min-h-0 px-3 pb-3">
         <main className="w-full h-full border p-3 overflow-hidden bg-gray-50 min-h-0">
           <TransformWrapper
-            initialScale={0.8}
-            minScale={0.5}
+            initialScale={0.7}
+            minScale={0.7}
             maxScale={3}
             wheel={{ step: 0.2 }}
             pinch={{ disabled: false }}
