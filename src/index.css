@@ -134,4 +134,8 @@
   #canvas {
     image-rendering: pixelated;
   }
+
+  #sidebar section h1 {
+    @apply font-medium;
+  }
 }

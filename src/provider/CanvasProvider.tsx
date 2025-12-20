@@ -4,6 +4,7 @@ import { http } from "@/lib/http";
 import {
   type CanvasFuncProps,
   type PixelCoord,
+  type PixelHistory,
   type PixelRecord,
 } from "@/lib/types";
 import { useCallback, useEffect, useState, type ReactNode } from "react";
@@ -12,6 +13,7 @@ const CanvasProvider = ({ children }: { children: ReactNode }) => {
   const [data, setData] = useState<PixelRecord[] | null>(null);
   const [currentCoord, setCurrentCoord] = useState<PixelCoord | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
+  const [currentPoint, setCurrentPoint] = useState<PixelCoord | null>(null);
 
   useEffect(() => {
     const getData = async () => {
@@ -32,6 +34,21 @@ const CanvasProvider = ({ children }: { children: ReactNode }) => {
     getData();
   }, []);
 
+  const getPointHistory = async (point: PixelCoord) => {
+    try {
+      const res = await http.get<PixelHistory[]>(
+        `/pixels/history/${point.x}/${point.y}`
+      );
+
+      if (res.status !== 200) throw new Error("failed to get history");
+
+      return res.data;
+    } catch (e) {
+      console.error(e);
+      return null;
+    }
+  };
+
   const getCoords = ({ e, canvasRef }: CanvasFuncProps): PixelCoord | null => {
     const canvas = canvasRef.current;
     if (!canvas) return null;
@@ -48,6 +65,15 @@ const CanvasProvider = ({ children }: { children: ReactNode }) => {
 
     return { x, y };
   };
+
+  const handleClick = useCallback(
+    (props: CanvasFuncProps) => {
+      const coords = getCoords(props);
+
+      if (coords) setCurrentPoint(coords);
+    },
+    [setCurrentPoint]
+  );
 
   const drawHoverPoint = (
     ctx: CanvasRenderingContext2D,
@@ -86,10 +112,14 @@ const CanvasProvider = ({ children }: { children: ReactNode }) => {
     data,
     loading,
     currentCoord,
+    currentPoint,
+    setCurrentPoint,
     drawHoverPoint,
     handleHover,
     handleLeave,
+    handleClick,
   };
+
   return (
     <CanvasContext.Provider value={value}>{children}</CanvasContext.Provider>
   );

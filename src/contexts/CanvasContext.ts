@@ -1,5 +1,10 @@
 import type { CanvasFuncProps, PixelCoord, PixelRecord } from "@/lib/types";
-import { createContext, useContext } from "react";
+import {
+  createContext,
+  useContext,
+  type Dispatch,
+  type SetStateAction,
+} from "react";
 
 export interface CanvasContextData {
   loading: boolean;
@@ -8,6 +13,9 @@ export interface CanvasContextData {
   drawHoverPoint: (ctx: CanvasRenderingContext2D, coords: PixelCoord) => void;
   handleHover: (props: CanvasFuncProps) => void;
   handleLeave: () => void;
+  handleClick: (props: CanvasFuncProps) => void;
+  currentPoint: PixelCoord | null;
+  setCurrentPoint: Dispatch<SetStateAction<PixelCoord | null>>;
 }
 
 export const CanvasContext = createContext<CanvasContextData | null>(null);

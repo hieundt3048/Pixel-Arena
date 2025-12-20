@@ -1,5 +1,15 @@
 import type { MouseEvent, RefObject } from "react";
 
+export interface ConcurrencyMode {
+  value: "NONE" | "PESSIMISTIC" | "OPTIMISTIC";
+  label: string;
+}
+
+export interface ColorPalette {
+  label: string;
+  value: string;
+}
+
 export interface PixelRecord {
   x: number;
   y: number;
