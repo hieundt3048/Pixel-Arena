@@ -7,7 +7,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 
 const ConcurrencyModes = () => {
-  const [concurrencyMode, setConcurrencyMode] =
+  const [currentMode, setCurrentMode] =
     useState<ConcurrencyMode["value"]>("NONE");
 
   return (
@@ -15,9 +15,9 @@ const ConcurrencyModes = () => {
       <h1>Concurrency Modes</h1>
 
       <RadioGroup
-        value={concurrencyMode}
+        value={currentMode}
         onValueChange={(value) =>
-          setConcurrencyMode(value as ConcurrencyMode["value"])
+          setCurrentMode(value as ConcurrencyMode["value"])
         }
         className="space-y-1"
       >
@@ -26,9 +26,9 @@ const ConcurrencyModes = () => {
             key={mode.value}
             className={cn(
               "flex items-center space-x-2 border rounded p-3 cursor-pointer transition-colors hover:bg-accent",
-              concurrencyMode === mode.value && "border bg-accent"
+              currentMode === mode.value && "border bg-accent"
             )}
-            onClick={() => setConcurrencyMode(mode.value)}
+            onClick={() => setCurrentMode(mode.value)}
           >
             <RadioGroupItem value={mode.value} id={mode.value} />
             <Label htmlFor={mode.value} className="cursor-pointer">

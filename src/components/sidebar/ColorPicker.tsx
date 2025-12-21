@@ -1,27 +1,44 @@
 import { COLORS_PALETTE } from "@/lib/constants";
 import { Button } from "../ui/button";
+import { useState } from "react";
+import type { ColorPalette } from "@/lib/types";
+import { cn } from "@/lib/utils";
 
 const ColorPicker = () => {
+  const [currentColor, setCurrentColor] = useState<ColorPalette>(
+    COLORS_PALETTE[0]
+  );
+
   // TODO: Handle paint
+
   return (
     <section className="space-y-3">
       <h1>Color Picker</h1>
 
       <div className="grid grid-cols-5 grid-rows-2 gap-2">
-        {COLORS_PALETTE.map((color) => (
-          <div
-            key={color.label + color.value}
-            className="aspect-square"
-            style={{ backgroundColor: color.value }}
-          />
-        ))}
+        {COLORS_PALETTE.map((color) => {
+          const isActive = currentColor.value === color.value;
+
+          return (
+            <div
+              onClick={() => setCurrentColor(color)}
+              key={color.label + color.value}
+              className={cn(
+                "aspect-square cursor-pointer rounded",
+                "ring-2 ring-transparent transition",
+                isActive && "ring-accent-foreground scale-105"
+              )}
+              style={{ backgroundColor: color.value }}
+            />
+          );
+        })}
       </div>
 
-      <div className="bg-secondary w-full border p-3 rounded text-center font-medium text-sm">
-        Current Color ( #FFFFFF )
+      <div className="bg-secondary w-full border p-2 rounded text-center font-medium text-sm">
+        Color ( {currentColor.value.toUpperCase()} )
       </div>
 
-      <Button className="w-full bg-[#1c1c1c]">Paint</Button>
+      <Button className="w-full bg-[#1c1c1c] rounded p-2!">Paint</Button>
     </section>
   );
 };

@@ -125,6 +125,16 @@
     height: 100%;
   }
 
+  #pixel-history {
+    @apply absolute bottom-5 left-1/2 -translate-x-1/2;
+
+    @apply w-56 text-center bg-white border p-3 rounded z-50;
+  }
+
+  button {
+    cursor: pointer;
+  }
+
   #root {
     height: 100%;
     width: 100%;
