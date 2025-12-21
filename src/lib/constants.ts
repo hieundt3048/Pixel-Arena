@@ -3,6 +3,9 @@ import type { ColorPalette, ConcurrencyMode } from "./types";
 export const GRID_SIZE = 100;
 export const PIXEL_SIZE = 10;
 
+export const CANVAS_WIDTH = GRID_SIZE * PIXEL_SIZE;
+export const CANVAS_HEIGHT = GRID_SIZE * PIXEL_SIZE;
+
 export const CONCURRENCY_MODES: ConcurrencyMode[] = [
   { value: "NONE", label: "No Lock" },
   { value: "PESSIMISTIC", label: "Pessimistic Lock" },

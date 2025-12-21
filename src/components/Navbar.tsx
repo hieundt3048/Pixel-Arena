@@ -1,10 +1,10 @@
 import { Swords } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { useUser } from "@/contexts/UserContext";
+import { useUser } from "@/hooks/useUser";
 
 const Navbar = () => {
-  const { currentUser } = useUser();
-  const username = currentUser || "Guest";
+  const { user } = useUser();
+  const username = user?.username || "Guest";
 
   return (
     <nav className="h-16 border-b flex items-center justify-between px-6">

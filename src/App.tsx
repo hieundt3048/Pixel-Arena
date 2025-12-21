@@ -1,6 +1,5 @@
 import Canvas from "@/components/canvas/Canvas";
 import HoverCanvas from "@/components/canvas/HoverCanvas";
-import { useCanvas } from "@/contexts/CanvasContext";
 import Loading from "@/components/Loading";
 import Navbar from "@/components/Navbar";
 import Sidebar from "@/components/sidebar/Sidebar";
@@ -8,11 +7,12 @@ import { TransformComponent, TransformWrapper } from "react-zoom-pan-pinch";
 import MarkerCanvas from "@/components/canvas/MarkerCanvas";
 import PixelHistory from "@/components/canvas/PixelHistory";
 import { useRef } from "react";
+import { useBoard } from "@/hooks/userBoard";
 
 const App = () => {
   const pixelHistoryRef = useRef(null);
 
-  const { loading } = useCanvas();
+  const { loading } = useBoard();
   if (loading) return <Loading />;
 
   return (

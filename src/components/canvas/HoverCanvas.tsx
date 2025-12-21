@@ -1,35 +1,21 @@
 import { useEffect, useRef } from "react";
-import { GRID_SIZE, PIXEL_SIZE } from "@/lib/constants";
-import { useCanvas } from "@/contexts/CanvasContext";
+import { useCanvas } from "@/hooks/useCanvas";
 
 const HoverCanvas = () => {
-  const subCanvasRef = useRef<HTMLCanvasElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
   const {
-    currentCoord,
+    currentPos,
+    onMouseMove,
+    onMouseLeave,
     drawHoverPoint,
-    handleHover,
-    handleLeave,
-    handleClick,
+    drawBase,
+    onMouseClick,
   } = useCanvas();
 
-  useEffect(() => {
-    const canvas = subCanvasRef.current;
-    if (!canvas) return;
-
-    const width = GRID_SIZE * PIXEL_SIZE;
-    const height = GRID_SIZE * PIXEL_SIZE;
-
-    canvas.width = width;
-    canvas.height = height;
-
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    ctx.clearRect(0, 0, width, height);
-  }, []);
+  useEffect(() => drawBase(canvasRef), [drawBase]);
 
   useEffect(() => {
-    const canvas = subCanvasRef.current;
+    const canvas = canvasRef.current;
     if (!canvas) return;
 
     const ctx = canvas.getContext("2d");
@@ -38,17 +24,17 @@ const HoverCanvas = () => {
     const { width, height } = canvas;
     ctx.clearRect(0, 0, width, height);
 
-    if (currentCoord) drawHoverPoint(ctx, currentCoord);
-  }, [currentCoord, drawHoverPoint]);
+    if (currentPos) drawHoverPoint(ctx, currentPos);
+  }, [currentPos, drawHoverPoint]);
 
   return (
     <canvas
       className="absolute top-0 left-0 w-full h-full pointer-events-auto"
-      ref={subCanvasRef}
+      ref={canvasRef}
       id="sub-canvas"
-      onClick={(e) => handleClick({ e, canvasRef: subCanvasRef })}
-      onMouseMove={(e) => handleHover({ e, canvasRef: subCanvasRef })}
-      onMouseLeave={handleLeave}
+      onClick={(e) => onMouseClick({ e, canvasRef: canvasRef })}
+      onMouseMove={(e) => onMouseMove({ e, canvasRef: canvasRef })}
+      onMouseLeave={onMouseLeave}
       aria-label="Canvas overlay for pixel selection"
     />
   );

@@ -1,5 +1,9 @@
 import type { MouseEvent, RefObject } from "react";
 
+export interface User {
+  username: string;
+}
+
 export interface ConcurrencyMode {
   value: "NONE" | "PESSIMISTIC" | "OPTIMISTIC";
   label: string;

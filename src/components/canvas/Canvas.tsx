@@ -1,4 +1,4 @@
-import { useCanvas } from "@/contexts/CanvasContext";
+import { useBoard } from "@/hooks/userBoard";
 import { GRID_SIZE, PIXEL_SIZE } from "@/lib/constants";
 import { useEffect, useRef } from "react";
 
@@ -14,7 +14,7 @@ const fillRect = (
 
 const Canvas = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const { data } = useCanvas();
+  const { data } = useBoard();
 
   useEffect(() => {
     const canvas = canvasRef.current;

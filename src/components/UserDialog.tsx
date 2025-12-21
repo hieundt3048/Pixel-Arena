@@ -9,13 +9,13 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
-import { useUser } from "@/contexts/UserContext";
+import { useUser } from "@/hooks/useUser";
 
 const UserDialog = () => {
-  const { username, setUsername, onSubmit, currentUser } = useUser();
+  const { user, username, onInputChange, handleSubmit } = useUser();
 
   return (
-    <Dialog open={!currentUser}>
+    <Dialog open={!user?.username}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>How can I call you?</DialogTitle>
@@ -26,11 +26,11 @@ const UserDialog = () => {
           name="username"
           placeholder="jack, peter, alice,..."
           value={username}
-          onChange={(e) => setUsername(e.target.value)}
+          onChange={onInputChange}
         />
         <DialogFooter>
           <DialogClose asChild>
-            <Button type="button" className="w-full" onClick={onSubmit}>
+            <Button type="button" className="w-full" onClick={handleSubmit}>
               Submit
             </Button>
           </DialogClose>

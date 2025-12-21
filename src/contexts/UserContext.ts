@@ -1,19 +1,11 @@
-import { createContext, useContext } from "react";
+import type { User } from "@/lib/types";
+import { createContext } from "react";
 
 interface UserContextData {
+  user: User | null;
   username: string;
-  setUsername: React.Dispatch<React.SetStateAction<string>>;
-  currentUser: string;
-  onSubmit: () => void;
+  onInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  handleSubmit: () => void;
 }
 
-export const UserContext = createContext<UserContextData>(
-  {} as UserContextData
-);
-
-export const useUser = () => {
-  const context = useContext(UserContext);
-  if (!context) throw new Error("useUser must be used within a UserProvider");
-
-  return context;
-};
+export const UserContext = createContext<UserContextData | null>(null);
