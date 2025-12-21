@@ -1,5 +1,6 @@
 import BoardProvider from "./BoardProvider";
 import CanvasProvider from "./CanvasProvider";
+import PaintToolProvider from "./PaintToolProvider";
 import UserProvider from "./UserProvider";
 
 const AppProvider = ({ children }: { children: React.ReactNode }) => {
@@ -7,7 +8,9 @@ const AppProvider = ({ children }: { children: React.ReactNode }) => {
     <>
       <UserProvider>
         <BoardProvider>
-          <CanvasProvider>{children}</CanvasProvider>
+          <CanvasProvider>
+            <PaintToolProvider>{children}</PaintToolProvider>
+          </CanvasProvider>
         </BoardProvider>
       </UserProvider>
     </>

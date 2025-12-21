@@ -1,15 +1,14 @@
 import { COLORS_PALETTE } from "@/lib/constants";
 import { Button } from "../ui/button";
-import { useState } from "react";
-import type { ColorPalette } from "@/lib/types";
 import { cn } from "@/lib/utils";
+import { usePaintTool } from "@/hooks/usePaintTool";
+import { useCanvas } from "@/hooks/useCanvas";
+import { useUser } from "@/hooks/useUser";
 
 const ColorPicker = () => {
-  const [currentColor, setCurrentColor] = useState<ColorPalette>(
-    COLORS_PALETTE[0]
-  );
-
-  // TODO: Handle paint
+  const { currentPin } = useCanvas();
+  const { user } = useUser();
+  const { currentColor, changeColor, handlePaint } = usePaintTool();
 
   return (
     <section className="space-y-3">
@@ -21,7 +20,7 @@ const ColorPicker = () => {
 
           return (
             <div
-              onClick={() => setCurrentColor(color)}
+              onClick={() => changeColor(color)}
               key={color.label + color.value}
               className={cn(
                 "aspect-square cursor-pointer rounded",
@@ -38,7 +37,13 @@ const ColorPicker = () => {
         Color ( {currentColor.value.toUpperCase()} )
       </div>
 
-      <Button className="w-full bg-[#1c1c1c] rounded p-2!">Paint</Button>
+      <Button
+        className="w-full rounded cursor-pointer"
+        disabled={!currentPin || !user}
+        onClick={() => handlePaint(currentPin!, user!)}
+      >
+        Paint
+      </Button>
     </section>
   );
 };

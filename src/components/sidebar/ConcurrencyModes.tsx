@@ -1,14 +1,12 @@
 import { CONCURRENCY_MODES } from "@/lib/constants";
-import type { ConcurrencyMode } from "@/lib/types";
 
 import { cn } from "@/lib/utils";
-import { useState } from "react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
+import { usePaintTool } from "@/hooks/usePaintTool";
 
 const ConcurrencyModes = () => {
-  const [currentMode, setCurrentMode] =
-    useState<ConcurrencyMode["value"]>("NONE");
+  const { currentMode, changeMode } = usePaintTool();
 
   return (
     <section className="space-y-1">
@@ -16,9 +14,7 @@ const ConcurrencyModes = () => {
 
       <RadioGroup
         value={currentMode}
-        onValueChange={(value) =>
-          setCurrentMode(value as ConcurrencyMode["value"])
-        }
+        onValueChange={changeMode}
         className="space-y-1"
       >
         {CONCURRENCY_MODES.map((mode) => (
@@ -28,7 +24,7 @@ const ConcurrencyModes = () => {
               "flex items-center space-x-2 border rounded p-3 cursor-pointer transition-colors hover:bg-accent",
               currentMode === mode.value && "border bg-accent"
             )}
-            onClick={() => setCurrentMode(mode.value)}
+            onClick={() => changeMode(mode.value)}
           >
             <RadioGroupItem value={mode.value} id={mode.value} />
             <Label htmlFor={mode.value} className="cursor-pointer">

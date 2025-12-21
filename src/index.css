@@ -131,10 +131,6 @@
     @apply w-56 text-center bg-white border p-3 rounded z-50;
   }
 
-  button {
-    cursor: pointer;
-  }
-
   #root {
     height: 100%;
     width: 100%;
