@@ -3,10 +3,10 @@ import { CONCURRENCY_MODES } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { usePaintTool } from "@/hooks/usePaintTool";
+import { useCanvasTool } from "@/hooks";
 
 const ConcurrencyModes = () => {
-  const { currentMode, changeMode } = usePaintTool();
+  const { currentMode, changeMode } = useCanvasTool();
 
   return (
     <section className="space-y-1">

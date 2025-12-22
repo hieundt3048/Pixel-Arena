@@ -1,113 +1,72 @@
-import { CanvasContext } from "@/contexts/CanvasContext";
-import {
-  CANVAS_HEIGHT,
-  CANVAS_WIDTH,
-  GRID_SIZE,
-  PIXEL_SIZE,
-} from "@/lib/constants";
-import type { CanvasFuncProps, PixelCoord } from "@/lib/types";
+import { CanvasContext } from "@/hooks";
+import type { OverlayCanvas } from "@/lib/canvas";
+import { http } from "@/lib/http";
+import type { PixelCoord, PixelRecord } from "@/lib/types";
 import type React from "react";
-import { useCallback, useState, type RefObject } from "react";
-
-const getPosition = (props: CanvasFuncProps): PixelCoord | null => {
-  const canvas = props.canvasRef.current;
-  if (!canvas) return null;
-
-  const rect = canvas.getBoundingClientRect();
-
-  const scaleX = canvas.width / rect.width;
-  const scaleY = canvas.height / rect.height;
-
-  const x = Math.floor(((props.e.clientX - rect.left) * scaleX) / PIXEL_SIZE);
-  const y = Math.floor(((props.e.clientY - rect.top) * scaleY) / PIXEL_SIZE);
-
-  if (x < 0 || x >= GRID_SIZE || y < 0 || y >= GRID_SIZE) return null;
-
-  return { x, y };
-};
-
-const drawHoverPoint = (ctx: CanvasRenderingContext2D, pos: PixelCoord) => {
-  const { width, height } = ctx.canvas;
-  ctx.clearRect(0, 0, width, height);
-
-  const baseX = pos.x * PIXEL_SIZE;
-  const baseY = pos.y * PIXEL_SIZE;
-
-  const px = (x: number, y: number, w = 1, h = 1) => {
-    ctx.fillRect(baseX + x, baseY + y, w, h);
-  };
-
-  ctx.globalAlpha = 0.3;
-  ctx.fillStyle = "#00132d";
-  px(0, 0, PIXEL_SIZE, PIXEL_SIZE);
-};
-
-const drawBase = (ref: RefObject<HTMLCanvasElement | null>) => {
-  const canvas = ref.current;
-  if (!canvas) return;
-
-  canvas.width = CANVAS_WIDTH;
-  canvas.height = CANVAS_HEIGHT;
-
-  const ctx = canvas.getContext("2d");
-  if (!ctx) return;
-
-  ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-};
-
-const drawPin = (
-  ref: RefObject<HTMLCanvasElement | null>,
-  currentPin: PixelCoord | null
-) => {
-  const canvas = ref.current;
-  if (!canvas) return;
-
-  const ctx = canvas.getContext("2d");
-  if (!ctx) return;
-
-  if (!currentPin) return;
-
-  ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-  ctx.globalAlpha = 0.3;
-  ctx.fillStyle = "#00132d";
-  ctx.fillRect(currentPin.x * PIXEL_SIZE, currentPin.y * PIXEL_SIZE, 10, 10);
-};
+import { useEffect, useState, type RefObject } from "react";
 
 const CanvasProvider = ({ children }: { children: React.ReactNode }) => {
-  const [currentPos, setCurrentPos] = useState<PixelCoord | null>(null);
-  const [currentPin, setCurrentPin] = useState<PixelCoord | null>(null);
+  const [data, setData] = useState<PixelRecord[] | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
 
-  const onMouseMove = useCallback(
-    (props: CanvasFuncProps) => {
-      const pos = getPosition(props);
+  const [hoveredPos, setHoveredPos] = useState<PixelCoord | null>(null);
+  const [selectedPos, setSelectedPos] = useState<PixelCoord | null>(null);
 
-      if (pos) setCurrentPos(pos);
-    },
-    [setCurrentPos]
-  );
+  useEffect(() => {
+    const getData = async () => {
+      try {
+        setLoading(true);
 
-  const onMouseLeave = () => setCurrentPos(null);
+        const res = await http.get("/pixels");
+        if (res.status !== 200) throw new Error("failed to load data");
 
-  const onMouseClick = useCallback(
-    (props: CanvasFuncProps) => {
-      const pos = getPosition(props);
+        setData(res.data);
+      } catch (e) {
+        console.error(e);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-      if (pos) setCurrentPin(pos);
-    },
-    [setCurrentPin]
-  );
+    getData();
+  }, []);
+
+  const onMouseClick = (
+    event: React.MouseEvent<HTMLCanvasElement>,
+    overlayRef: RefObject<OverlayCanvas | null>
+  ) => {
+    const overlay = overlayRef.current;
+    if (!overlay) return;
+
+    const pos = overlay.getPosition(event);
+
+    if (pos) setSelectedPos(pos);
+  };
+
+  const onMouseMove = (
+    event: React.MouseEvent<HTMLCanvasElement>,
+    overlayRef: RefObject<OverlayCanvas | null>
+  ) => {
+    const overlay = overlayRef.current;
+    if (!overlay) return;
+
+    const pos = overlay.getPosition(event);
+
+    if (pos) setHoveredPos(pos);
+  };
+
+  const onMouseLeave = () => setHoveredPos(null);
 
   return (
     <CanvasContext.Provider
       value={{
-        currentPos,
-        currentPin,
+        data,
+        loading,
+        hoveredPos,
+        selectedPos,
         onMouseMove,
-        onMouseLeave,
         onMouseClick,
-        drawHoverPoint,
-        drawBase,
-        drawPin,
+        onMouseLeave,
       }}
     >
       {children}

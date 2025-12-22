@@ -55,6 +55,13 @@ export interface PixelUpdateMessage {
   version: number;
 }
 
+export interface AppError {
+  error: string;
+  message: string;
+  status: number;
+  remainingSeconds?: number;
+}
+
 export interface CanvasFuncProps {
   e: MouseEvent<HTMLCanvasElement>;
   canvasRef: RefObject<HTMLCanvasElement | null>;

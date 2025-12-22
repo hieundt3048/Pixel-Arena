@@ -2,18 +2,28 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
 import App from "./App.tsx";
-import { Toaster } from "@/components/ui/sonner.tsx";
-import UserDialog from "@/components/UserDialog";
-import AppProvider from "@/providers/AppProvider.tsx";
+import {
+  AuthProvider,
+  CanvasProvider,
+  CanvasToolProvider,
+  WebSocketProvider,
+  LoggerProvider,
+} from "@/providers";
 
 createRoot(document.getElementById("root")!).render(
   <>
     <StrictMode>
-      <AppProvider>
-        <Toaster />
-        <UserDialog />
-        <App />
-      </AppProvider>
+      <LoggerProvider>
+        <WebSocketProvider>
+          <AuthProvider>
+            <CanvasProvider>
+              <CanvasToolProvider>
+                <App />
+              </CanvasToolProvider>
+            </CanvasProvider>
+          </AuthProvider>
+        </WebSocketProvider>
+      </LoggerProvider>
     </StrictMode>
   </>
 );

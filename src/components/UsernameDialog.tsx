@@ -9,13 +9,15 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
-import { useUser } from "@/hooks/useUser";
+import { useState } from "react";
+import { useAuth } from "@/hooks";
 
-const UserDialog = () => {
-  const { user, username, onInputChange, handleSubmit } = useUser();
+const UsernameDialog = () => {
+  const { currentUsername, handleSubmit } = useAuth();
+  const [username, setUsername] = useState<string>("");
 
   return (
-    <Dialog open={!user?.username}>
+    <Dialog open={!currentUsername}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>How can I call you?</DialogTitle>
@@ -26,11 +28,15 @@ const UserDialog = () => {
           name="username"
           placeholder="jack, peter, alice,..."
           value={username}
-          onChange={onInputChange}
+          onChange={(e) => setUsername(e.target.value)}
         />
         <DialogFooter>
           <DialogClose asChild>
-            <Button type="button" className="w-full" onClick={handleSubmit}>
+            <Button
+              type="button"
+              className="w-full"
+              onClick={() => handleSubmit(username)}
+            >
               Submit
             </Button>
           </DialogClose>
@@ -40,4 +46,4 @@ const UserDialog = () => {
   );
 };
 
-export default UserDialog;
+export default UsernameDialog;

@@ -145,6 +145,22 @@
     @apply font-medium;
   }
 
+  #root-container {
+    @apply w-full h-screen flex flex-col gap-3 select-none overflow-hidden;
+
+    main {
+      @apply flex gap-3 w-full flex-1 min-h-0 px-3 pb-3;
+
+      #wrapper {
+        @apply w-full h-full border p-3 overflow-hidden bg-gray-50 min-h-0 relative;
+      }
+
+      #canvas-wrapper {
+        @apply w-full h-full relative border;
+      }
+    }
+  }
+
   /* hide scrollbar but keep scroll */
   .scrollbar-none::-webkit-scrollbar {
     display: none;

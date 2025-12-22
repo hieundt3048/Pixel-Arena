@@ -1,10 +1,12 @@
 import { Swords } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { useUser } from "@/hooks/useUser";
+import { useAuth, useWebSocket } from "@/hooks";
 
 const Navbar = () => {
-  const { user } = useUser();
-  const username = user?.username || "Guest";
+  const { currentUsername } = useAuth();
+  const { connected } = useWebSocket();
+
+  const username = currentUsername || "Guest";
 
   return (
     <nav className="h-16 border-b flex items-center justify-between px-6">
@@ -19,7 +21,9 @@ const Navbar = () => {
         </Avatar>
         <div className="text-xs">
           <h1 className="font-semibold truncate max-w-20">{username}</h1>
-          <p className="text-muted-foreground">Connected</p>
+          <p className="text-muted-foreground">
+            {connected ? "Connected" : "Disconnected"}
+          </p>
         </div>
       </section>
     </nav>

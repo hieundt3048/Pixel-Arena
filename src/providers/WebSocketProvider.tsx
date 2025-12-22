@@ -1,37 +1,41 @@
-import { WebSocketContext } from "@/contexts/WebSocketContext";
 import type React from "react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Client } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
-import { toast } from "sonner";
-import { type PixelUpdateMessage } from "@/lib/types";
-
-const WS_URL = "http://localhost:8080/ws";
+import { WEBSOCKET_URL } from "@/lib/constants";
+import { useLogger, WebSocketContext } from "@/hooks";
+import type { PixelUpdateMessage } from "@/lib/types";
 
 const WebSocketProvider = ({ children }: { children: React.ReactNode }) => {
-  const clientRef = useRef<Client | null>(null);
-  const [updatedPoint, setUpdatedPoint] = useState<PixelUpdateMessage | null>(
-    null
-  );
+  const { addLog } = useLogger();
+  const [connected, setConnected] = useState<boolean>(false);
+  const [message, setMessage] = useState<PixelUpdateMessage | null>(null);
 
   useEffect(() => {
-    const client = new Client({
-      webSocketFactory: () => new SockJS(WS_URL),
-      reconnectDelay: 3000,
+    const client = new Client();
 
-      onConnect: () => {
-        toast.success("websocket connected");
+    client.webSocketFactory = () => new SockJS(WEBSOCKET_URL);
+    client.reconnectDelay = 3000;
 
-        client.subscribe("/topic/pixel-update", (message) => {
-          const payload: PixelUpdateMessage = JSON.parse(message.body);
-          console.log("Nhận tin nhắn từ /topic/update:", payload);
-          setUpdatedPoint(payload);
-        });
-      },
-    });
+    client.onConnect = () => {
+      addLog("Websocket is connected");
+      setConnected(true);
 
+      client.subscribe("/topic/pixel-update", (message) => {
+        const payload: PixelUpdateMessage = JSON.parse(message.body);
+
+        setMessage(payload);
+        addLog(
+          `PIXEL UPDATED at (${payload.x}, ${payload.y}) with color (${payload.color}) by ${payload.updatedBy}`
+        );
+      });
+    };
+
+    client.onDisconnect = () => {
+      addLog("Websocket is disconnected");
+      setConnected(false);
+    };
     client.activate();
-    clientRef.current = client;
 
     return () => {
       client.deactivate();
@@ -39,7 +43,7 @@ const WebSocketProvider = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   return (
-    <WebSocketContext.Provider value={{ updatedPoint }}>
+    <WebSocketContext.Provider value={{ message, connected }}>
       {children}
     </WebSocketContext.Provider>
   );

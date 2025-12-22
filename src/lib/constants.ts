@@ -54,3 +54,5 @@ export const COLORS_PALETTE: ColorPalette[] = [
     value: "#c56bba",
   },
 ] as const;
+
+export const WEBSOCKET_URL = "http://localhost:8080/ws" as const;

@@ -1,50 +1,44 @@
-import Canvas from "@/components/canvas/Canvas";
-import HoverCanvas from "@/components/canvas/HoverCanvas";
-import Loading from "@/components/Loading";
-import Navbar from "@/components/Navbar";
-import Sidebar from "@/components/sidebar/Sidebar";
 import { TransformComponent, TransformWrapper } from "react-zoom-pan-pinch";
-import MarkerCanvas from "@/components/canvas/MarkerCanvas";
-import PixelHistory from "@/components/canvas/PixelHistory";
-import { useRef } from "react";
-import { useBoard } from "@/hooks/userBoard";
+import { Toaster } from "sonner";
+import { Navbar, UsernameDialog } from "@/components";
+import { Sidebar } from "@/components/sidebar";
+import { Canvas, HoverCanvas, PinCanvas } from "@/components/canvas";
 
 const App = () => {
-  const pixelHistoryRef = useRef(null);
-
-  const { loading } = useBoard();
-  if (loading) return <Loading />;
-
   return (
-    <div className="w-full h-screen flex flex-col gap-3 select-none overflow-hidden">
-      <Navbar />
-      <div className="flex gap-3 w-full flex-1 min-h-0 px-3 pb-3">
-        <main className="w-full h-full border p-3 overflow-hidden bg-gray-50 min-h-0 relative">
-          <PixelHistory ref={pixelHistoryRef} />
-          <TransformWrapper
-            initialScale={0.7}
-            minScale={0.7}
-            maxScale={10}
-            wheel={{ step: 0.2 }}
-            pinch={{ disabled: false }}
-            doubleClick={{ disabled: false, step: 0.7 }}
-            panning={{ disabled: false }}
-            centerOnInit
-          >
-            <TransformComponent
-              wrapperStyle={{ width: "100%", height: "100%" }}
+    <>
+      <Toaster />
+      <UsernameDialog />
+      <div id="root-container">
+        <Navbar />
+        <main>
+          <div id="wrapper">
+            {/* <HistoryOverlay /> */}
+            <TransformWrapper
+              initialScale={0.7}
+              minScale={0.7}
+              maxScale={10}
+              wheel={{ step: 0.2 }}
+              pinch={{ disabled: false }}
+              doubleClick={{ disabled: false, step: 0.7 }}
+              panning={{ disabled: false }}
+              centerOnInit
             >
-              <div className="w-full h-full relative border">
-                <Canvas />
-                <MarkerCanvas />
-                <HoverCanvas />
-              </div>
-            </TransformComponent>
-          </TransformWrapper>
+              <TransformComponent
+                wrapperStyle={{ width: "100%", height: "100%" }}
+              >
+                <div id="canvas-wrapper">
+                  <Canvas />
+                  <PinCanvas />
+                  <HoverCanvas />
+                </div>
+              </TransformComponent>
+            </TransformWrapper>
+          </div>
+          <Sidebar />
         </main>
-        <Sidebar />
       </div>
-    </div>
+    </>
   );
 };
 

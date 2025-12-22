@@ -1,5 +1,12 @@
-import { WebSocketContext } from "@/contexts/WebSocketContext";
-import { useContext } from "react";
+import type { PixelUpdateMessage } from "@/lib/types";
+import { createContext, useContext } from "react";
+
+interface IWebSocketContext {
+  message: PixelUpdateMessage | null;
+  connected: boolean;
+}
+
+export const WebSocketContext = createContext<IWebSocketContext | null>(null);
 
 export const useWebSocket = () => {
   const context = useContext(WebSocketContext);

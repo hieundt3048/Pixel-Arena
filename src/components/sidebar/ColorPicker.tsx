@@ -1,14 +1,12 @@
 import { COLORS_PALETTE } from "@/lib/constants";
 import { Button } from "../ui/button";
 import { cn } from "@/lib/utils";
-import { usePaintTool } from "@/hooks/usePaintTool";
-import { useCanvas } from "@/hooks/useCanvas";
-import { useUser } from "@/hooks/useUser";
+import { useAuth, useCanvas, useCanvasTool } from "@/hooks";
 
 const ColorPicker = () => {
-  const { currentPin } = useCanvas();
-  const { user } = useUser();
-  const { currentColor, changeColor, handlePaint } = usePaintTool();
+  const { selectedPos } = useCanvas();
+  const { currentUsername } = useAuth();
+  const { currentColor, changeColor, handlePaint } = useCanvasTool();
 
   return (
     <section className="space-y-1">
@@ -39,8 +37,27 @@ const ColorPicker = () => {
 
       <Button
         className="w-full rounded cursor-pointer"
-        disabled={!currentPin || !user}
-        onClick={() => handlePaint(currentPin!, user!)}
+        disabled={!selectedPos || !currentUsername}
+        onClick={() => selectedPos && handlePaint(selectedPos)}
+        // onClick={() => {
+        //   if (selectedPos)
+        //     toast.promise<PixelUpdateMessage | AppError>(
+        //       handlePaint(selectedPos),
+        //       {
+        //         loading: "Processing...",
+        //         success: (data) => {
+        //           const res = data as PixelUpdateMessage;
+
+        //           return `Success - ${res.x} | ${res.y}`;
+        //         },
+        //         error: (data) => {
+        //           const res = data as AppError;
+
+        //           return `${res.message}`;
+        //         },
+        //       }
+        //     );
+        // }}
       >
         Paint
       </Button>

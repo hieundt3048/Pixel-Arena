@@ -7,11 +7,13 @@
 - [x] Show history if pin
 - [x] Choose color
 - [x] Redraw while getting message from websocket
-- [ ] Show logs
+- [x] Show logs
 - [ ] Add mobile device view
 - [ ] Hidden sidebar while not need
 - [x] Add contexts to get data from sidebar and navbar
 - [x] Redesign web app
 - [x] Handle error while loading data (add timeout)
-- [ ] Reconstruct files
+- [x] Reconstruct files
 - [ ] Spam request
+- [ ] Fix toast
+- [ ] Fix pin history

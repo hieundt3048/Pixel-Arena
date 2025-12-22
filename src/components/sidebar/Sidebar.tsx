@@ -1,9 +1,10 @@
+import { useLogger } from "@/hooks";
 import { Button } from "../ui/button";
 import ColorPicker from "./ColorPicker";
 import ConcurrencyModes from "./ConcurrencyModes";
 
 const Sidebar = () => {
-  // TODO: Add logs
+  const { logs } = useLogger();
 
   return (
     <div
@@ -33,7 +34,11 @@ const Sidebar = () => {
       <section className="flex flex-col flex-1 gap-3 min-h-0">
         <h1>Logs</h1>
 
-        <div className="flex-1 text-sm overflow-y-auto space-y-1 p-1 scrollbar-none bg-neutral-100 outline"></div>
+        <div className="flex-1 text-sm overflow-y-auto space-y-1 p-1 scrollbar-none bg-neutral-100 outline">
+          {logs.map((log, i) => (
+            <p key={i}>{log}</p>
+          ))}
+        </div>
       </section>
     </div>
   );
