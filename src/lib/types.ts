@@ -51,6 +51,8 @@ export interface PixelUpdateMessage {
   y: number;
   color: string;
   updatedBy: string;
+  updatedAt: Date;
+  version: number;
 }
 
 export interface CanvasFuncProps {

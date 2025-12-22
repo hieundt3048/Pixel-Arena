@@ -1,4 +1,5 @@
 import { useBoard } from "@/hooks/userBoard";
+import { useWebSocket } from "@/hooks/useWebSocket";
 import { GRID_SIZE, PIXEL_SIZE } from "@/lib/constants";
 import { useEffect, useRef } from "react";
 
@@ -14,6 +15,7 @@ const fillRect = (
 
 const Canvas = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const { updatedPoint } = useWebSocket();
   const { data } = useBoard();
 
   useEffect(() => {
@@ -58,6 +60,19 @@ const Canvas = () => {
       if (pixel.color !== "#FFFFFF")
         fillRect(ctx, pixel.color, pixel.x, pixel.y);
   }, [data]);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    if (!updatedPoint) return;
+
+    // !!!: Fix
+    fillRect(ctx, updatedPoint.color, updatedPoint.x, updatedPoint.y);
+  }, [updatedPoint]);
 
   return (
     <canvas

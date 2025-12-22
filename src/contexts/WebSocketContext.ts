@@ -1,3 +1,10 @@
+import type { PixelUpdateMessage } from "@/lib/types";
 import { createContext } from "react";
 
-export const WebSocketContext = createContext(null);
+interface WebSocketContextProps {
+  updatedPoint: PixelUpdateMessage | null;
+}
+
+export const WebSocketContext = createContext<WebSocketContextProps | null>(
+  null
+);
