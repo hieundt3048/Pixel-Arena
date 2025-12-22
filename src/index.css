@@ -144,4 +144,13 @@
   #sidebar section h1 {
     @apply font-medium;
   }
+
+  /* hide scrollbar but keep scroll */
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+  .scrollbar-none {
+    -ms-overflow-style: none; /* IE & Edge */
+    scrollbar-width: none; /* Firefox */
+  }
 }

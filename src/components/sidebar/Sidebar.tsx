@@ -6,7 +6,10 @@ const Sidebar = () => {
   // TODO: Add logs
 
   return (
-    <div className="border rounded w-80 p-3 space-y-3" id="sidebar">
+    <div
+      className="border rounded w-90 p-3 flex flex-col gap-1 h-full"
+      id="sidebar"
+    >
       {/* Color Picker */}
       <ColorPicker />
 
@@ -17,14 +20,20 @@ const Sidebar = () => {
       <section className="space-y-1">
         <h1>Demo Tools</h1>
 
-        <Button variant={"destructive"} className="w-full" size={"lg"}>
+        <Button
+          variant={"destructive"}
+          className="w-full rounded cursor-pointer"
+          size={"lg"}
+        >
           Send 50 requests to (50,50)
         </Button>
       </section>
 
       {/* Logs */}
-      <section>
+      <section className="flex flex-col flex-1 gap-3 min-h-0">
         <h1>Logs</h1>
+
+        <div className="flex-1 text-sm overflow-y-auto space-y-1 p-1 scrollbar-none bg-neutral-100 outline"></div>
       </section>
     </div>
   );

@@ -1,24 +1,39 @@
-import { X } from "lucide-react";
-import { forwardRef, useImperativeHandle, useState } from "react";
+import { useCanvas } from "@/hooks/useCanvas";
+import { useEffect, useState } from "react";
+import { Button } from "../ui/button";
 
-const PixelHistory = forwardRef((props, ref) => {
-  const [open, setOpen] = useState(false);
-  useImperativeHandle(ref, () => ({
-    open: () => setOpen(true),
-    close: () => setOpen(false),
-  }));
+const PixelHistory = () => {
+  // TODO: Delete pin if close history
+  // TODO: Add more information from backend
+  const { currentPin } = useCanvas();
+  const [open, setOpen] = useState(true);
 
-  if (!open) return null;
+  useEffect(() => {
+    const setState = () => setOpen(true);
+
+    setState();
+  }, [currentPin]);
+
+  const isVisible = Boolean(currentPin) && open;
+
+  if (!isVisible || !currentPin) return null;
 
   return (
-    <div id="pixel-history">
-      <h1>PIXEL | X: 50 | Y: 50</h1>
+    <div id="pixel-history" className="space-y-3">
+      <h1>
+        PIXEL | X: {currentPin.x} | Y: {currentPin.y}
+      </h1>
 
-      <button onClick={() => setOpen(false)} className="absolute right-1 top-1">
-        <X size={16} />
-      </button>
+      <Button
+        onClick={() => setOpen(false)}
+        variant="secondary"
+        size="sm"
+        className="w-full rounded cursor-pointer"
+      >
+        Close
+      </Button>
     </div>
   );
-});
+};
 
 export default PixelHistory;

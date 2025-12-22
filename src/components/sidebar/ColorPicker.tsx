@@ -11,7 +11,7 @@ const ColorPicker = () => {
   const { currentColor, changeColor, handlePaint } = usePaintTool();
 
   return (
-    <section className="space-y-3">
+    <section className="space-y-1">
       <h1>Color Picker</h1>
 
       <div className="grid grid-cols-5 grid-rows-2 gap-2">
