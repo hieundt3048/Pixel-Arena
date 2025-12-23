@@ -18,21 +18,26 @@ const WebSocketProvider = ({ children }: { children: React.ReactNode }) => {
     client.reconnectDelay = 3000;
 
     client.onConnect = () => {
-      addLog("Websocket is connected");
+      addLog("WS", "Connected");
       setConnected(true);
 
       client.subscribe("/topic/pixel-update", (message) => {
         const payload: PixelUpdateMessage = JSON.parse(message.body);
 
+        console.log(payload);
+
         setMessage(payload);
+
+        // TODO: Need to check again
         addLog(
-          `PIXEL UPDATED at (${payload.x}, ${payload.y}) with color (${payload.color}) by ${payload.updatedBy}`
+          "PIXEL",
+          `Updated (${payload.x}, ${payload.y}), color (${payload.color})`
         );
       });
     };
 
     client.onDisconnect = () => {
-      addLog("Websocket is disconnected");
+      addLog("WS", "Disconnected");
       setConnected(false);
     };
     client.activate();

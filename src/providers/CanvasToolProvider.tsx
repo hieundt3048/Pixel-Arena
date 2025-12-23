@@ -1,4 +1,4 @@
-import { CanvasToolContext, useAuth } from "@/hooks";
+import { CanvasToolContext, useAuth, useLogger } from "@/hooks";
 import { COLORS_PALETTE } from "@/lib/constants";
 import { http } from "@/lib/http";
 import type {
@@ -12,6 +12,7 @@ import type {
 import { useState } from "react";
 
 const CanvasToolProvider = ({ children }: { children: React.ReactNode }) => {
+  const { addLog } = useLogger();
   const { currentUsername } = useAuth();
   const [currentColor, setCurrentColor] = useState<ColorPalette>(
     COLORS_PALETTE[0]
@@ -33,15 +34,20 @@ const CanvasToolProvider = ({ children }: { children: React.ReactNode }) => {
       mode: currentMode,
     };
 
+    console.log(data);
+
     try {
+      addLog("PIXEL", `Request paint (${data.x}, ${data.y})`);
       const res = await http.post<PixelUpdateMessage>("/pixels/paint", data);
 
       if (res.status !== 200) throw new Error("Network error");
 
+      addLog("PIXEL", `Painted (${data.x},${data.y}) color=${data.color}`);
       return res.data;
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (e: any) {
+      addLog("ERROR", `Paint failed (${data.x},${data.y}) ${e?.message ?? ""}`);
       if (e?.response?.data) throw e.response.data as AppError;
 
       throw { message: "Network error" } as AppError;

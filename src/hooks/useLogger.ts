@@ -2,7 +2,7 @@ import { createContext, useContext } from "react";
 
 interface ILoggerContext {
   logs: string[];
-  addLog: (message: string) => void;
+  addLog: (type: "WS" | "PIXEL" | "ERROR", message: string) => void;
 }
 
 export const LoggerContext = createContext<ILoggerContext | null>(null);
