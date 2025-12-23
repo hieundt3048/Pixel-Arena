@@ -13,9 +13,8 @@
 ### Clone Repository
 
 ```bash
-git clone https://github.com/hieundt3048/Pixel-Arena.git
-cd Pixel-Arena
-git switch pixel-ui
+git clone -b pixel-ui --single-branch https://github.com/hieundt3048/Pixel-Arena.git pixel-ui
+cd pixel-ui
 ```
 
 ### Install & Start server
