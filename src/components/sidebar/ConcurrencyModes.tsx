@@ -9,13 +9,13 @@ const ConcurrencyModes = () => {
   const { currentMode, changeMode } = useCanvasTool();
 
   return (
-    <section className="space-y-1">
-      <h1>Concurrency Modes</h1>
+    <section>
+      <h1>Modes</h1>
 
       <RadioGroup
         value={currentMode}
         onValueChange={changeMode}
-        className="space-y-1"
+        className="gap-2"
       >
         {CONCURRENCY_MODES.map((mode) => (
           <div

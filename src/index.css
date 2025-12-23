@@ -141,8 +141,18 @@
     image-rendering: pixelated;
   }
 
-  #sidebar section h1 {
-    @apply font-medium;
+  #sidebar {
+    @apply border rounded w-90 p-3 flex flex-col gap-3 h-full;
+
+    @apply max-lg:hidden;
+
+    section {
+      @apply space-y-2;
+    }
+
+    section h1 {
+      @apply font-medium;
+    }
   }
 
   #root-container {

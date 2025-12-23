@@ -11,10 +11,15 @@ const ColorPicker = () => {
   const { currentColor, changeColor, handlePaint } = useCanvasTool();
 
   return (
-    <section className="space-y-1">
-      <h1>Color Picker</h1>
+    <section>
+      <div className="flex justify-between items-center">
+        <h1>Color Picker</h1>
+        <div className="bg-secondary outline px-2 py-1.5 rounded text-center font-medium text-sm">
+          {currentColor.value.toUpperCase()}
+        </div>
+      </div>
 
-      <div className="grid grid-cols-5 grid-rows-2 gap-2">
+      <div className="grid grid-cols-5 grid-rows-2 gap-3">
         {COLORS_PALETTE.map((color) => {
           const isActive = currentColor.value === color.value;
 
@@ -23,7 +28,7 @@ const ColorPicker = () => {
               onClick={() => changeColor(color)}
               key={color.label + color.value}
               className={cn(
-                "aspect-square cursor-pointer rounded",
+                "size-10 cursor-pointer rounded",
                 "ring-2 ring-transparent transition",
                 isActive && "ring-accent-foreground scale-105"
               )}
@@ -31,10 +36,6 @@ const ColorPicker = () => {
             />
           );
         })}
-      </div>
-
-      <div className="bg-secondary w-full border p-2 rounded text-center font-medium text-sm">
-        Color ( {currentColor.value.toUpperCase()} )
       </div>
 
       <Button
