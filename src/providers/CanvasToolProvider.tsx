@@ -1,4 +1,4 @@
-import { CanvasToolContext, useAuth, useLogger } from "@/hooks";
+import { CanvasToolContext, useAuth, useCanvas, useLogger } from "@/hooks";
 import { COLORS_PALETTE } from "@/lib/constants";
 import { http } from "@/lib/http";
 import type {
@@ -13,6 +13,7 @@ import { useState } from "react";
 
 const CanvasToolProvider = ({ children }: { children: React.ReactNode }) => {
   const { addLog } = useLogger();
+  const { clearSelected } = useCanvas();
   const { currentUsername } = useAuth();
   const [currentColor, setCurrentColor] = useState<ColorPalette>(
     COLORS_PALETTE[0]
@@ -43,6 +44,7 @@ const CanvasToolProvider = ({ children }: { children: React.ReactNode }) => {
       if (res.status !== 200) throw new Error("Network error");
 
       addLog("PIXEL", `Painted (${data.x},${data.y}) color=${data.color}`);
+      clearSelected();
       return res.data;
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
