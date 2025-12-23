@@ -9,12 +9,13 @@
 - [x] Redraw while getting message from websocket
 - [x] Show logs
 - [ ] Add mobile device view
-- [ ] Hidden sidebar while not need
+- [x] Hidden sidebar while not need
 - [x] Add contexts to get data from sidebar and navbar
 - [x] Redesign web app
 - [x] Handle error while loading data (add timeout)
 - [x] Reconstruct files
-- [ ] Spam request
+- [x] Spam request
 - [x] Fix toast
-- [ ] Fix redraw while 2 user draw concurrency
+- [x] Fix redraw while 2 user draw concurrency
 - [x] Fix pin history
+- [ ] Fix logs

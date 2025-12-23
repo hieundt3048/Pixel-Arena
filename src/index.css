@@ -138,7 +138,7 @@
   #sidebar {
     @apply border rounded w-90 p-3 flex flex-col gap-3 h-full;
 
-    @apply max-lg:hidden;
+    @apply max-md:hidden;
 
     section {
       @apply space-y-2;
