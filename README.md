@@ -1,73 +1,66 @@
-# React + TypeScript + Vite
+# Pixel Arena UI
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Prerequisites
 
-Currently, two official plugins are available:
+- Node.js 18.x or newer (Node 20 recommended)
+- npm (v8+) or yarn / pnpm
+- Git
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## React Compiler
+## How to install
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Clone Repository
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+git clone https://github.com/hieundt3048/Pixel-Arena.git
+cd Pixel-Arena
+git switch pixel-ui
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### Install & Start server
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+```bash
+npm install
+npm run dev
+```
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+Open <http://localhost:5173> (Vite default) in your browser. If the port is already used, Vite will prompt or choose another port
+
+---
+
+## Notes
+
+> Set get all pixels limit to 10.000
+
+### Script to add 10.000 pixels to database ( Using GPT )
+
+```sql
+CREATE DATABASE PixelDB;
+
+-- Script insert 10.000 pixels (grid 100x100, x và y từ 0 đến 99)
+
+WITH
+    Ten(N) AS (SELECT 1 UNION ALL SELECT 1 UNION ALL SELECT 1 UNION ALL SELECT 1 UNION ALL SELECT 1
+               UNION ALL SELECT 1 UNION ALL SELECT 1 UNION ALL SELECT 1 UNION ALL SELECT 1 UNION ALL SELECT 1),
+    Tally(N) AS (
+        SELECT ROW_NUMBER() OVER (ORDER BY (SELECT NULL)) - 1
+        FROM Ten T1
+                 CROSS JOIN Ten T2
+                 CROSS JOIN Ten T3
+                 CROSS JOIN Ten T4
+    )
+INSERT INTO Pixel (x, y, color, updated_by, updated_at, version)
+SELECT
+    X.N AS x,
+    Y.N AS y,
+    '#FFFFFF' AS color,
+    'system' AS updatedBy,
+    GETDATE() AS updatedAt,
+    0 AS version
+FROM Tally X
+         CROSS JOIN Tally Y
+WHERE X.N <= 99
+  AND Y.N <= 99;
+
 ```
