@@ -17,4 +17,4 @@
 - [ ] Spam request
 - [x] Fix toast
 - [ ] Fix redraw while 2 user draw concurrency
-- [ ] Fix pin history
+- [x] Fix pin history
