@@ -3,7 +3,6 @@ import { Toaster } from "sonner";
 import { Navbar, UsernameDialog } from "@/components";
 import { Sidebar } from "@/components/sidebar";
 import { Canvas, HoverCanvas, PinCanvas, History } from "@/components/canvas";
-import { AnimatePresence } from "motion/react";
 
 const App = () => {
   return (
@@ -14,9 +13,8 @@ const App = () => {
         <Navbar />
         <main>
           <div id="wrapper">
-            <AnimatePresence>
-              <History />
-            </AnimatePresence>
+            <History />
+
             <TransformWrapper
               initialScale={0.7}
               minScale={0.7}
