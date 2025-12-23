@@ -21,8 +21,12 @@ git switch pixel-ui
 ### Install & Start server
 
 ```bash
+# Run locally
 npm install
 npm run dev
+
+# Run with one command
+docker compose up --build
 ```
 
 Open <http://localhost:5173> (Vite default) in your browser. If the port is already used, Vite will prompt or choose another port
