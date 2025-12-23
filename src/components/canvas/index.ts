@@ -1,6 +1,6 @@
 import Canvas from "./Canvas";
 import HoverCanvas from "./HoverCanvas";
 import PinCanvas from "./PinCanvas";
-import HistoryOverlay from "./HistoryOverlay";
+import History from "./History";
 
-export { Canvas, HoverCanvas, PinCanvas, HistoryOverlay };
+export { Canvas, HoverCanvas, PinCanvas, History };

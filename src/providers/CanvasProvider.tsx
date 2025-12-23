@@ -57,6 +57,8 @@ const CanvasProvider = ({ children }: { children: React.ReactNode }) => {
 
   const onMouseLeave = () => setHoveredPos(null);
 
+  const clearSelected = () => setSelectedPos(null);
+
   return (
     <CanvasContext.Provider
       value={{
@@ -67,6 +69,7 @@ const CanvasProvider = ({ children }: { children: React.ReactNode }) => {
         onMouseMove,
         onMouseClick,
         onMouseLeave,
+        clearSelected,
       }}
     >
       {children}

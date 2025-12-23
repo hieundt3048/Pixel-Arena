@@ -16,6 +16,7 @@ interface ICanvasContext {
     overlayRef: RefObject<OverlayCanvas | null>
   ) => void;
   onMouseLeave: () => void;
+  clearSelected: () => void;
 }
 
 export const CanvasContext = createContext<ICanvasContext | null>(null);

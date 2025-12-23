@@ -2,7 +2,8 @@ import { TransformComponent, TransformWrapper } from "react-zoom-pan-pinch";
 import { Toaster } from "sonner";
 import { Navbar, UsernameDialog } from "@/components";
 import { Sidebar } from "@/components/sidebar";
-import { Canvas, HoverCanvas, PinCanvas } from "@/components/canvas";
+import { Canvas, HoverCanvas, PinCanvas, History } from "@/components/canvas";
+import { AnimatePresence } from "motion/react";
 
 const App = () => {
   return (
@@ -13,7 +14,9 @@ const App = () => {
         <Navbar />
         <main>
           <div id="wrapper">
-            {/* <HistoryOverlay /> */}
+            <AnimatePresence>
+              <History />
+            </AnimatePresence>
             <TransformWrapper
               initialScale={0.7}
               minScale={0.7}
