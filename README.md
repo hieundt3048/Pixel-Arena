@@ -64,3 +64,26 @@ WHERE X.N <= 99
   AND Y.N <= 99;
 
 ```
+
+### Docker compose file for mssql server
+
+```yaml
+volumes:
+  mssql-db:
+
+services:
+  mssql:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    ports:
+      - "1433:1433"
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=Sa@12345
+      - MSSQL_PID=Developer
+      - MSSQL_COLLATION=SQL_Latin1_General_CP1_CI_AS
+      - TZ=Asia/Ho_Chi_Minh
+    volumes:
+      - mssql-db:/var/opt/mssql
+    container_name: mssql
+    # restart: always
+```
