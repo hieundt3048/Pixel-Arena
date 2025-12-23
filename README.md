@@ -1,5 +1,11 @@
 # Pixel Arena UI
 
+## Issues
+
+- Khi 2 user đều thực hiện gửi request lên api, thì user 1 gửi thành công và được broadcast lên websocket, sau đó được update màu dựa trên message đó
+- Vấn đề là khi user 2 cũng gửi nhưng không thành công, thì vẫn được broadcast lên websocket, dẫn đến sai màu, nhưng reload lại trang thì là màu của user 1
+- Vấn đề nằm ở cả No Lock và Optimistic Lock
+
 ## Prerequisites
 
 - Node.js 18.x or newer (Node 20 recommended)
