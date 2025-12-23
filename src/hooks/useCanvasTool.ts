@@ -1,9 +1,4 @@
-import type {
-  AppError,
-  ColorPalette,
-  PixelCoord,
-  PixelUpdateMessage,
-} from "@/lib/types";
+import type { ColorPalette, PixelCoord, PixelUpdateMessage } from "@/lib/types";
 import { createContext, useContext } from "react";
 
 interface ICanvasToolContext {
@@ -11,9 +6,7 @@ interface ICanvasToolContext {
   currentMode: "NONE" | "PESSIMISTIC" | "OPTIMISTIC";
   changeColor: (color: ColorPalette) => void;
   changeMode: (value: string) => void;
-  handlePaint: (
-    currentPin: PixelCoord
-  ) => Promise<PixelUpdateMessage | AppError>;
+  handlePaint: (currentPin: PixelCoord) => Promise<PixelUpdateMessage>;
 }
 
 export const CanvasToolContext = createContext<ICanvasToolContext | null>(null);

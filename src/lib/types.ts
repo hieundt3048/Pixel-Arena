@@ -56,9 +56,9 @@ export interface PixelUpdateMessage {
 }
 
 export interface AppError {
-  error: string;
+  error?: string;
   message: string;
-  status: number;
+  status?: number;
   remainingSeconds?: number;
 }
 

@@ -2,6 +2,8 @@ import { COLORS_PALETTE } from "@/lib/constants";
 import { Button } from "../ui/button";
 import { cn } from "@/lib/utils";
 import { useAuth, useCanvas, useCanvasTool } from "@/hooks";
+import type { AppError, PixelUpdateMessage } from "@/lib/types";
+import { toast } from "sonner";
 
 const ColorPicker = () => {
   const { selectedPos } = useCanvas();
@@ -38,26 +40,22 @@ const ColorPicker = () => {
       <Button
         className="w-full rounded cursor-pointer"
         disabled={!selectedPos || !currentUsername}
-        onClick={() => selectedPos && handlePaint(selectedPos)}
-        // onClick={() => {
-        //   if (selectedPos)
-        //     toast.promise<PixelUpdateMessage | AppError>(
-        //       handlePaint(selectedPos),
-        //       {
-        //         loading: "Processing...",
-        //         success: (data) => {
-        //           const res = data as PixelUpdateMessage;
+        onClick={() => {
+          if (selectedPos)
+            toast.promise<PixelUpdateMessage>(handlePaint(selectedPos), {
+              loading: "Processing...",
+              success: (data) => {
+                const res = data as PixelUpdateMessage;
 
-        //           return `Success - ${res.x} | ${res.y}`;
-        //         },
-        //         error: (data) => {
-        //           const res = data as AppError;
+                return `Success - ${res.x} | ${res.y}`;
+              },
+              error: (data) => {
+                const res = data as AppError;
 
-        //           return `${res.message}`;
-        //         },
-        //       }
-        //     );
-        // }}
+                return `${res.message}`;
+              },
+            });
+        }}
       >
         Paint
       </Button>

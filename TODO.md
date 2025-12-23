@@ -15,5 +15,6 @@
 - [x] Handle error while loading data (add timeout)
 - [x] Reconstruct files
 - [ ] Spam request
-- [ ] Fix toast
+- [x] Fix toast
+- [ ] Fix redraw while 2 user draw concurrency
 - [ ] Fix pin history

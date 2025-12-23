@@ -24,24 +24,27 @@ const CanvasToolProvider = ({ children }: { children: React.ReactNode }) => {
     setCurrentMode(value as ConcurrencyMode["value"]);
 
   const handlePaint = async (currentPin: PixelCoord) => {
+    if (!currentUsername) throw new Error("Username is required");
+
+    const data: PixelRequest = {
+      ...currentPin,
+      updatedBy: currentUsername,
+      color: currentColor.value,
+      mode: currentMode,
+    };
+
     try {
-      if (!currentUsername) throw new Error("failed while processing data");
-
-      const data: PixelRequest = {
-        ...currentPin,
-        updatedBy: currentUsername,
-        color: currentColor.value,
-        mode: currentMode,
-      };
-
       const res = await http.post<PixelUpdateMessage>("/pixels/paint", data);
 
-      if (res.status !== 200) throw new Error("failed while processing data");
+      if (res.status !== 200) throw new Error("Network error");
 
       return res.data;
+
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (e: any) {
-      return e?.response?.data as AppError;
+      if (e?.response?.data) throw e.response.data as AppError;
+
+      throw { message: "Network error" } as AppError;
     }
   };
 
