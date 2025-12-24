@@ -42,7 +42,7 @@ public class PixelController {
 
     @GetMapping
     public List<Pixel> getAllPixels(){
-        return pixelRepository.findAll().stream().limit(100).toList();
+        return pixelRepository.findAll(); // Trả về TẤT CẢ pixels (10,000 pixels cho lưới 100x100)
     }
 
     // Lấy lịch sử của tất cả pixel (giới hạn 100 bản ghi gần nhất)

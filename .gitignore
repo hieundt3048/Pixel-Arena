@@ -3,6 +3,7 @@ Note.txt
 README_BACKEND.md
 TONG_HOP.md
 CHECKLIST.md
+setup-complete-database.sql
 
 target/
 .mvn/wrapper/maven-wrapper.jar
