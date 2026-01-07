@@ -18,8 +18,14 @@ import com.QTcsdl.pixel_arena.Repository.UserLogRepository;
 import com.QTcsdl.pixel_arena.dto.PixelRequest;
 import com.QTcsdl.pixel_arena.exception.CooldownException;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+
 @Service
 public class PixelService {
+
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Autowired
     private PixelRepository pixelRepository;
@@ -35,7 +41,7 @@ public class PixelService {
 
     private static final long COOLDOWN_SECONDS = 5;
 
-    // Giả lập độ trễ xử lý (3 giây) để con người kịp nhìn thấy lỗi
+    // Giả lập độ trễ xử lý (3 giây) để kịp nhìn thấy lỗi
     private void simulateProcessingDelay() {
         try {
             Thread.sleep(3000); 
@@ -80,8 +86,13 @@ public class PixelService {
     }
 
     // Gửi thông báo real-time qua WebSocket
+    // Không để exception từ WebSocket làm rollback transaction
     private void broadcastPixelUpdate(Pixel pixel) {
-        messagingTemplate.convertAndSend("/topic/pixel-update", pixel);
+        try {
+            messagingTemplate.convertAndSend("/topic/pixel-update", pixel);
+        } catch (Exception e) {
+            // Không ném exception ra ngoài để tránh rollback transaction
+        }
     }
 
     //CÁCH 1: KHÔNG KHÓA (Gây lỗi Race Condition)
@@ -90,19 +101,24 @@ public class PixelService {
         // Bước 1: Kiểm tra cooldown
         checkCooldown(request.getUpdatedBy());
 
-        // Bước 2: Đọc dữ liệu lên
-        Pixel pixel = pixelRepository.findById(new PixelId(request.getX(), request.getY()))
-                .orElseThrow(() -> new RuntimeException("Pixel not found"));
-
-        String oldColor = pixel.getColor();
+        // Bước 2: Đọc dữ liệu lên bằng native query (bypass Hibernate)
+        String oldColor = (String) entityManager.createNativeQuery(
+            "SELECT color FROM Pixel WHERE x = :x AND y = :y")
+            .setParameter("x", request.getX())
+            .setParameter("y", request.getY())
+            .getSingleResult();
 
         // Bước 3: NGỦ 3 GIÂY (Trong lúc này, người khác cũng đọc được dữ liệu cũ)
         simulateProcessingDelay();
 
-        // Bước 4: Ghi đè dữ liệu mới
-        pixel.setColor(request.getColor());
-        pixel.setUpdatedBy(request.getUpdatedBy());
-        Pixel savedPixel = pixelRepository.save(pixel);
+        // Bước 4: Ghi đè dữ liệu mới bằng native query (KHÔNG check version)
+        entityManager.createNativeQuery(
+            "UPDATE Pixel SET color = :color, updatedBy = :updatedBy, updatedAt = GETDATE() WHERE x = :x AND y = :y")
+            .setParameter("color", request.getColor())
+            .setParameter("updatedBy", request.getUpdatedBy())
+            .setParameter("x", request.getX())
+            .setParameter("y", request.getY())
+            .executeUpdate();
 
         // Bước 5: Lưu lịch sử
         saveHistory(request.getX(), request.getY(), oldColor, request.getColor(), request.getUpdatedBy());
@@ -110,7 +126,11 @@ public class PixelService {
         // Bước 6: Cập nhật user log
         updateUserLog(request.getUpdatedBy());
 
-        // Bước 7: Broadcast qua WebSocket
+        // Bước 7: Đọc lại pixel để broadcast
+        Pixel savedPixel = pixelRepository.findById(new PixelId(request.getX(), request.getY()))
+                .orElseThrow(() -> new RuntimeException("Pixel not found"));
+        
+        // Bước 8: Broadcast qua WebSocket
         broadcastPixelUpdate(savedPixel);
 
         return savedPixel;
