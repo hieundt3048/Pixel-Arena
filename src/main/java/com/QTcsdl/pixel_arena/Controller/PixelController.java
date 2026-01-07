@@ -68,7 +68,7 @@ public class PixelController {
     // API TÔ MÀU CHÍNH
     @PostMapping("/paint")
     public Pixel paintPixel(@RequestBody PixelRequest request) {
-        return switch (request.getMode()) {
+        Pixel result = switch (request.getMode()) {
             case "PESSIMISTIC" -> {
                 System.out.println("Dang chay che do: PESSIMISTIC LOCK");
                 yield pixelService.paintPessimistic(request);
@@ -82,6 +82,11 @@ public class PixelController {
                 yield pixelService.paintNoLock(request);
             }
         };
+        
+        // Broadcast CHỈ KHI request thành công (không có exception)
+        pixelService.broadcastUpdate(result);
+        
+        return result;
     }
 
     // Xử lý ngoại lệ Optimistic Lock Failure

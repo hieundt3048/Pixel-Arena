@@ -126,12 +126,9 @@ public class PixelService {
         // Bước 6: Cập nhật user log
         updateUserLog(request.getUpdatedBy());
 
-        // Bước 7: Đọc lại pixel để broadcast
+        // Bước 7: Đọc lại pixel để return
         Pixel savedPixel = pixelRepository.findById(new PixelId(request.getX(), request.getY()))
                 .orElseThrow(() -> new RuntimeException("Pixel not found"));
-        
-        // Bước 8: Broadcast qua WebSocket
-        broadcastPixelUpdate(savedPixel);
 
         return savedPixel;
     }
@@ -161,9 +158,6 @@ public class PixelService {
 
         // Bước 6: Cập nhật user log
         updateUserLog(request.getUpdatedBy());
-
-        // Bước 7: Broadcast qua WebSocket
-        broadcastPixelUpdate(savedPixel);
 
         return savedPixel;
     }
@@ -195,9 +189,11 @@ public class PixelService {
         // Bước 6: Cập nhật user log
         updateUserLog(request.getUpdatedBy());
 
-        // Bước 7: Broadcast qua WebSocket
-        broadcastPixelUpdate(savedPixel);
-
         return savedPixel;
+    }
+
+    // Broadcast pixel update qua WebSocket
+    public void broadcastUpdate(Pixel pixel) {
+        broadcastPixelUpdate(pixel);
     }
 }
